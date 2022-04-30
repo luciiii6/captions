@@ -23,4 +23,33 @@ RSpec.describe "Captions", type: :request do
                                   ] })
     end
   end
+
+  describe "POST /captions" do
+    let(:body) do
+      {
+        "caption": {
+          "url": "http://image.url",
+          "text": "caption text"
+        }
+      }
+    end
+
+    it 'responds with 201' do
+      post captions_path, params: body
+      expect(response).to have_http_status(:created)
+    end
+
+    it 'responds with correct body' do
+      post captions_path, params: body
+      json_response = JSON.parse(response.body, symbolize_names: true)
+      expect(json_response).to eq({
+                                    caption: {
+                                      id: 123,
+                                      url: "http://image.url",
+                                      text: "caption text",
+                                      caption_url: "http://example.com/images/meme.jpb"
+                                    }
+                                  })
+    end
+  end
 end

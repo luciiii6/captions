@@ -15,3 +15,7 @@ Style/Documentation:
 
 RSpec/ExampleLength:
   Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
