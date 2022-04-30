@@ -19,3 +19,6 @@ RSpec/ExampleLength:
 Metrics/BlockLength:
   Exclude:
     - "spec/**/*"
+  
+Layout/EndOfLine:
+  Enabled: false
