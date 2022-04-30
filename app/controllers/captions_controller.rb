@@ -2,28 +2,14 @@
 
 class CaptionsController < ApplicationController
   def index
-    captions = [
-      {
-        id: 123,
-        url: "http://image.url/meme.jpg",
-        text: "caption text",
-        caption_url: ""
-      }
-    ]
+    captions = Caption.all
     render json: { captions: }
-    # head :ok
   end
 
   def create
-    caption = {
-      caption: {
-        id: 123,
-        url: "http://image.url",
-        text: "caption text",
-        caption_url: "http://example.com/images/meme.jpb"
-      }
-    }
+    attributes = params.require(:caption).permit(:url, :text)
+    caption = Caption.create(attributes)
 
-    render json: caption, status: :created
+    render json: { caption: }, status: :created
   end
 end
