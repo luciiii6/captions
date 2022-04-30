@@ -4,7 +4,6 @@ require 'rails_helper'
 
 RSpec.describe "Captions", type: :request do
   describe "when creating a caption" do
-    # subject { post captions_path,params:params }
     let(:url) { Faker::Internet.url }
     let(:text) { Faker::TvShows::GameOfThrones.quote }
 
@@ -20,11 +19,6 @@ RSpec.describe "Captions", type: :request do
         get captions_path
 
         json_response = JSON.parse(response.body, symbolize_names: true)
-        # expect(json_response[:captions]).to include(hash_including ({
-        #   url: url,
-        #   text: text
-        # })
-        # )
         expect(json_response[:captions].first).to match(hash_including({
                                                                          url:,
                                                                          text:
