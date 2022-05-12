@@ -14,9 +14,6 @@ gem "sqlite3", "~> 1.4"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 5.0"
 
-gem "down"
-
-gem "mini_magick"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
@@ -45,7 +42,6 @@ group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem 'dotenv-rails', '~>2.7', '>=2.7.6'
-  gem 'faker'
   gem 'rspec-rails', '~> 6.0.0.rc1'
 end
 
