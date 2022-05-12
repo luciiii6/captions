@@ -247,8 +247,8 @@ RSpec.describe "Captions", type: :request do
       it "returns 200" do
         post captions_path, params: {
           caption: {
-            url: Faker::LoremFlickr.image(size: "300x300", search_terms: ['beer']),
-            text: Faker::Beer.brand
+            url: Faker::CryptoCoin.url_logo,
+            text: Faker::CryptoCoin.coin_name
           }
         }
 
@@ -291,8 +291,8 @@ RSpec.describe "Captions", type: :request do
 
   describe "GET /captions/:id" do
     context "with existing caption" do
-      let(:url) { Faker::LoremFlickr.image(size: "300x300", search_terms: ['beer']) }
-      let(:text) { Faker::Beer.brand }
+      let(:url) { Faker::CryptoCoin.url_logo }
+      let(:text) { Faker::CryptoCoin.coin_name }
       let(:caption_url) { "/images/#{Digest::MD5.hexdigest("#{url}#{text}")}.jpg" }
       let(:params) do
         {
