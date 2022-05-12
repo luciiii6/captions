@@ -34,27 +34,32 @@ class CaptionsController < ApplicationController
 
   def create
     attributes = params.require(:caption).permit(:url, :text)
-    attributes.fetch(:url)
-    attributes.fetch(:text)
 
-    caption = Caption.create(attributes)
+    caption = Caption.new(attributes)
+
     if caption.valid?
-      image_name = "#{Digest::MD5.hexdigest("#{caption.url}#{caption.text}")}.jpg"
-      path = Download.download_image(caption.url, images_dir, image_name)
-      ImageCreator.create_meme(path, caption.text)
+      image_name = generate_caption(caption)
+
       caption.caption_url = "/images/#{image_name}"
-      caption.save
-      render json: { caption: }, status: :created if caption.valid?
+      caption.save!
     else
       errors = caption.errors.map { |err| error_message_invalid_parameters(err.full_message) }
       render json: { errors: }, status: :unprocessable_entity
     end
-  rescue ActionController::ParameterMissing, Download::Error => e
+  rescue ActionController::ParameterMissing, Download::Error, ActiveRecordError => e
     errors = error_message_invalid_parameters(e.message)
     render json: { errors: [errors] }, status: :bad_request
   end
 
   private
+
+  def generate_caption(caption)
+    image_name = "#{Digest::MD5.hexdigest("#{caption.url}#{caption.text}")}.jpg"
+    path = Download.download_image(caption.url, images_dir, image_name)
+    ImageCreator.create_meme(path, caption.text)
+
+    image_name
+  end
 
   def error_message_invalid_parameters(description)
     {
