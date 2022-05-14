@@ -36,17 +36,19 @@ class CaptionsController < ApplicationController
     attributes = params.require(:caption).permit(:url, :text)
 
     caption = Caption.new(attributes)
-
+    
     if caption.valid?
-      image_name = generate_caption(caption)
-
-      caption.caption_url = "/images/#{image_name}"
+      #image_name = generate_caption(caption)
+      # caption.caption_url = images_dir + image_name
       caption.save!
+      ImageGeneratorJob.perform_later(caption, images_dir)
+      CaptionMailer.with(caption: caption).captions_saved_mail.deliver_now
+      render json: {caption: }, status: 202
     else
       errors = caption.errors.map { |err| error_message_invalid_parameters(err.full_message) }
       render json: { errors: }, status: :unprocessable_entity
     end
-  rescue ActionController::ParameterMissing, Download::Error, ActiveRecordError => e
+  rescue ActionController::ParameterMissing, Download::Error => e
     errors = error_message_invalid_parameters(e.message)
     render json: { errors: [errors] }, status: :bad_request
   end

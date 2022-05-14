@@ -17,6 +17,8 @@ gem "puma", "~> 5.0"
 gem "down"
 
 gem "mini_magick"
+
+gem 'sidekiq'
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
@@ -47,6 +49,7 @@ group :development, :test do
   gem 'dotenv-rails', '~>2.7', '>=2.7.6'
   gem 'faker'
   gem 'rspec-rails', '~> 6.0.0.rc1'
+  gem 'letter_opener_web'
 end
 
 group :development do
