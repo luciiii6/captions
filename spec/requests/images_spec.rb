@@ -17,7 +17,7 @@ RSpec.describe "/images" do
         }
 
         caption_url = JSON.parse(response.body, symbolize_names: true)[:caption][:caption_url]
-
+        pp caption_url
         get caption_url
       end
 

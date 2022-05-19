@@ -35,7 +35,7 @@ RSpec.describe "Captions", type: :request do
 
       it 'responds with 201' do
         post_captions
-        expect(response).to have_http_status(:created)
+        expect(response).to have_http_status(:accepted)
       end
 
       it 'responds with correct body' do
@@ -83,7 +83,7 @@ RSpec.describe "Captions", type: :request do
       it "returns 400" do
         post_captions
 
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it "returns an error body with url invalid parameters message" do
@@ -94,7 +94,7 @@ RSpec.describe "Captions", type: :request do
         expect(response_json[:errors].first).to match(hash_including({
                                                                        code: "invalid_parameters",
                                                                        title: "Invalid parameters in request body",
-                                                                       description: "param is missing or the value is empty: url"
+                                                                       description: "Url can't be blank"
                                                                      }))
       end
     end
@@ -111,7 +111,7 @@ RSpec.describe "Captions", type: :request do
       it "returns 400" do
         post_captions
 
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it "returns an error body with text invalid parameters message" do
@@ -122,7 +122,7 @@ RSpec.describe "Captions", type: :request do
         expect(response_json[:errors].first).to match(hash_including({
                                                                        code: "invalid_parameters",
                                                                        title: "Invalid parameters in request body",
-                                                                       description: "param is missing or the value is empty: text"
+                                                                       description: "Text can't be blank"
                                                                      }))
       end
     end
@@ -305,7 +305,7 @@ RSpec.describe "Captions", type: :request do
 
       it "returns 200 and specifed caption as JSON" do
         post captions_path, params: params
-        expect(response).to have_http_status(:created)
+        expect(response).to have_http_status(:accepted)
 
         id = JSON.parse(response.body, symbolize_names: true)[:caption][:id]
 
