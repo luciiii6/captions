@@ -8,5 +8,11 @@ Rails.application.routes.draw do
   resources :captions
   resources :images, only: [:show]
 
+  resources :users do
+    collection do
+      post 'sign_up'
+    end
+  end
+
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 end
