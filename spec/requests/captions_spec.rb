@@ -313,11 +313,7 @@ RSpec.describe "Captions", type: :request do
         response_json = JSON.parse(response.body, symbolize_names: true)
 
         expect(response).to have_http_status(:ok)
-        expect(response_json[:caption]).to match(hash_including({
-                                                                  url:,
-                                                                  text:,
-                                                                  caption_url:
-                                                                }))
+        expect(response_json[:caption][:caption_url]).to eq('spec' + caption_url)
       end
     end
 
