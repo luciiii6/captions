@@ -3,7 +3,6 @@
 class ImagesController < ApplicationController
   def show
     image_name = "#{params[:id]}.#{params[:format]}"
-
     send_file Rails.root.join("#{images_dir}#{image_name}"), type: "image/jpeg"
   rescue ActionController::MissingFile
     render json: { errors: [error_not_found(image_name)] }, status: :not_found

@@ -12,7 +12,7 @@ class CaptionsController < ApplicationController
   def show
     caption = Caption.find(params[:id])
 
-    render json: { "caption": caption }, status: :ok
+    render json: { caption: }, status: :ok
   rescue ActiveRecord::RecordNotFound => e
     errors = error_not_found(e.message)
     render json: { errors: [errors] }, status: :not_found
@@ -39,9 +39,10 @@ class CaptionsController < ApplicationController
     
     if caption.valid?
       #image_name = generate_caption(caption)
-      # caption.caption_url = images_dir + image_name
+      image_name = "#{Digest::MD5.hexdigest("#{caption.url}#{caption.text}")}.jpg"
+      caption.caption_url = images_dir + image_name
       caption.save!
-      ImageGeneratorJob.perform_later(caption, images_dir)
+      ImageGeneratorJob.perform_now(caption, images_dir, image_name)
       CaptionMailer.with(caption: caption).captions_saved_mail.deliver_now
       render json: {caption: }, status: 202
     else
