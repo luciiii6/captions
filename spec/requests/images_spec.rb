@@ -14,10 +14,10 @@ RSpec.describe "/images" do
             url:,
             text:
           }
-        }
+        }, headers: auth_headers
 
         caption = JSON.parse(response.body, symbolize_names: true)
-        get "/images/#{File.basename(caption[:caption][:caption_url])}"
+        get "/images/#{File.basename(caption[:caption][:caption_url])}", headers: auth_headers
       end
 
       after do
@@ -41,7 +41,7 @@ RSpec.describe "/images" do
       let(:image_name) { "#{Faker::Number.hexadecimal(digits: 16)}.jpg" }
 
       before do
-        get "/images/#{image_name}"
+        get "/images/#{image_name}", headers: auth_headers
       end
 
       it "returns 404" do

@@ -4,13 +4,29 @@ require 'rails_helper'
 
 RSpec.describe "Captions", type: :request do
   describe "GET /captions" do
+    context 'request is not authenticated' do
+      it 'returns 401' do
+        get captions_path
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context 'request uses expired token' do
+      it 'returns 401' do
+        headers = Timecop.freeze(2.days.ago) { auth_headers }
+
+        get captions_path, headers: headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+    
     it "responds with 200" do
-      get captions_path
+      get captions_path, headers: auth_headers
       expect(response).to have_http_status(:ok)
     end
 
     it 'responds with correct body' do
-      get captions_path
+      get captions_path, headers: auth_headers
       json_response = JSON.parse(response.body, symbolize_names: true)
 
       expect(json_response).to eq({ captions: [] })
@@ -18,7 +34,7 @@ RSpec.describe "Captions", type: :request do
   end
 
   describe "POST /captions" do
-    subject(:post_captions) { post captions_path, params: }
+    subject(:post_captions) { post captions_path, params: , headers: auth_headers}
 
     context "with valid request body" do
       let(:url) { Faker::CryptoCoin.url_logo }
@@ -250,11 +266,11 @@ RSpec.describe "Captions", type: :request do
             url: Faker::CryptoCoin.url_logo,
             text: Faker::CryptoCoin.coin_name
           }
-        }
+        } , headers: auth_headers
 
         id = JSON.parse(response.body, symbolize_names: true)[:caption][:id]
 
-        delete "/captions/#{id}"
+        delete "/captions/#{id}", headers: auth_headers
 
         expect(response).to have_http_status(:ok)
       end
@@ -264,19 +280,19 @@ RSpec.describe "Captions", type: :request do
       let(:id) { Faker::Number.number }
 
       before do
-        get captions_path
+        get captions_path, headers: auth_headers
 
         expect(JSON.parse(response.body, symbolize_names: true)[:captions].length).to eq 0
       end
 
       it "returns 404" do
-        delete "/captions/#{id}"
+        delete "/captions/#{id}", headers: auth_headers
 
         expect(response).to have_http_status(:not_found)
       end
 
       it "returns an error body with caption not found message" do
-        delete "/captions/#{id}"
+        delete "/captions/#{id}", headers: auth_headers
 
         response_json = JSON.parse(response.body, symbolize_names: true)
 
@@ -304,12 +320,12 @@ RSpec.describe "Captions", type: :request do
       end
 
       it "returns 200 and specifed caption as JSON" do
-        post captions_path, params: params
+        post captions_path, params: params, headers: auth_headers
         expect(response).to have_http_status(:accepted)
 
         id = JSON.parse(response.body, symbolize_names: true)[:caption][:id]
 
-        get "/captions/#{id}"
+        get "/captions/#{id}", headers: auth_headers
         response_json = JSON.parse(response.body, symbolize_names: true)
 
         expect(response).to have_http_status(:ok)
@@ -321,19 +337,19 @@ RSpec.describe "Captions", type: :request do
       let(:id) { Faker::Number.number }
 
       before do
-        get captions_path
+        get captions_path, headers: auth_headers
 
         expect(JSON.parse(response.body, symbolize_names: true)[:captions].length).to eq 0
       end
 
       it "returns 404" do
-        get "/captions/#{id}"
+        get "/captions/#{id}", headers: auth_headers
 
         expect(response).to have_http_status(:not_found)
       end
 
       it "returns an error body with caption not found message" do
-        get "/captions/#{id}"
+        get "/captions/#{id}", headers: auth_headers
 
         response_json = JSON.parse(response.body, symbolize_names: true)
 

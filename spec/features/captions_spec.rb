@@ -15,8 +15,8 @@ RSpec.describe "Captions", type: :request do
             text:
           }
         }
-        post captions_path, params: params
-        get captions_path
+        post captions_path, params: params, headers: auth_headers
+        get captions_path, headers: auth_headers
 
         json_response = JSON.parse(response.body, symbolize_names: true)
         expect(json_response[:captions].first).to match(hash_including({
